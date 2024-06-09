@@ -1,0 +1,59 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  createdAt DateTime      @default(now())
+  email     String?       @unique
+  firstName String?
+  id        String        @id @default(auto()) @map("_id") @db.ObjectId
+  lastName  String?
+  name      String?
+  password  String
+  role      EnumUserRole?
+  roles     Json
+  updatedAt DateTime      @updatedAt
+  username  String        @unique
+}
+
+model HodDetails {
+  createdAt  DateTime @default(now())
+  department String?
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  name       String?
+  updatedAt  DateTime @updatedAt
+}
+
+model Student {
+  classField String?
+  createdAt  DateTime  @default(now())
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  name       String?
+  requests   Request[]
+  rollNumber String?
+  updatedAt  DateTime  @updatedAt
+}
+
+model Request {
+  createdAt      DateTime           @default(now())
+  id             String             @id @default(auto()) @map("_id") @db.ObjectId
+  requestLetter  Json?
+  status         EnumRequestStatus?
+  student        Student?           @relation(fields: [studentId], references: [id])
+  studentId      String?            @db.ObjectId
+  submissionDate DateTime?
+  updatedAt      DateTime           @updatedAt
+}
+
+enum EnumUserRole {
+  Option1
+}
+
+enum EnumRequestStatus {
+  Option1
+}
